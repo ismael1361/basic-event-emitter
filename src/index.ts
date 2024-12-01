@@ -108,7 +108,10 @@ export class BasicEventEmitter<T extends EventsListeners = any> {
 	 * // Output: Emitter is ready
 	 */
 	set prepared(value: boolean) {
-		(this.emit as any)("internal_ready");
+		if (value === true) {
+			(this.emit as any)("internal_ready");
+		}
+		this._ready = value;
 	}
 
 	/**

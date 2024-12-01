@@ -83,7 +83,10 @@ export class BasicEventEmitter {
      * // Output: Emitter is ready
      */
     set prepared(value) {
-        this.emit("internal_ready");
+        if (value === true) {
+            this.emit("internal_ready");
+        }
+        this._ready = value;
     }
     /**
      * Clear all events
