@@ -64,10 +64,10 @@ export class BasicEventEmitter<T extends EventsListeners = any> {
 		}
 
 		return new Promise((resolve) => {
-			this.once("internal_ready", async () => {
+			this.once("internal_ready", (async () => {
 				const response = await callback?.();
 				resolve(response as any);
-			});
+			}) as any);
 		});
 	}
 
@@ -204,11 +204,11 @@ export class BasicEventEmitter<T extends EventsListeners = any> {
 	 * emitter.emit("greet", "Alice");
 	 * // Output: Hello, Alice!
 	 */
-	once<K extends keyof T>(event: K, callback?: SubscriptionCallback<Parameters<T[K]>>): Promise<void> {
-		return new Promise<void>((resolve) => {
+	once<K extends keyof T, R = any>(event: K, callback?: (...args: Parameters<T[K]>) => R): Promise<typeof callback extends undefined ? undefined : R> {
+		return new Promise<any>((resolve) => {
 			const ourCallback = (...arg: Parameters<T[K]>) => {
-				resolve();
-				callback?.(...arg);
+				const r = callback?.(...arg);
+				resolve(r);
 			};
 			if (this[_oneTimeEvents].has(event)) {
 				runCallback(ourCallback, ...((this[_oneTimeEvents].get(event) ?? []) as Parameters<T[K]>));
@@ -241,7 +241,7 @@ export class BasicEventEmitter<T extends EventsListeners = any> {
 	 * emitter.once("greet", listener);
 	 * emitter.offOnce("greet", listener);
 	 */
-	offOnce<K extends keyof T>(event: K, callback?: SubscriptionCallback<Parameters<T[K]>>): BasicEventEmitter<T> {
+	offOnce<K extends keyof T>(event: K, callback?: (...args: Parameters<T[K]>) => ReturnType<T[K]>): BasicEventEmitter<T> {
 		this[_subscriptions] = this[_subscriptions].filter((s) => s.event !== event || (callback && s.callback !== callback) || !s.once);
 		return this;
 	}

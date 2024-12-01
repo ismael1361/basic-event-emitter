@@ -138,7 +138,7 @@ export declare class BasicEventEmitter<T extends EventsListeners = any> {
      * emitter.emit("greet", "Alice");
      * // Output: Hello, Alice!
      */
-    once<K extends keyof T>(event: K, callback?: SubscriptionCallback<Parameters<T[K]>>): Promise<void>;
+    once<K extends keyof T, R = any>(event: K, callback?: (...args: Parameters<T[K]>) => R): Promise<typeof callback extends undefined ? undefined : R>;
     /**
      * Remove a listener that was added with `once`
      * @param event Event to remove the listener from
@@ -158,7 +158,7 @@ export declare class BasicEventEmitter<T extends EventsListeners = any> {
      * emitter.once("greet", listener);
      * emitter.offOnce("greet", listener);
      */
-    offOnce<K extends keyof T>(event: K, callback?: SubscriptionCallback<Parameters<T[K]>>): BasicEventEmitter<T>;
+    offOnce<K extends keyof T>(event: K, callback?: (...args: Parameters<T[K]>) => ReturnType<T[K]>): BasicEventEmitter<T>;
     /**
      * Emit an event
      * @param event Event to emit

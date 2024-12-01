@@ -114,17 +114,19 @@ emitter.on('farewell', sayGoodbye);
 emitter.off('farewell', sayGoodbye);
 ```
 
-### `once(event: string, listener: (...args: any[]) => void): Promise<void>`
+### `once(event: string, listener: (...args: any[]) => R): Promise<R>`
 Registra um ouvinte que será chamado apenas uma vez.
 
 - **event**: O nome do evento.
 - **listener**: A função a ser chamada quando o evento for emitido.
+- **returns**: Uma Promise que resolve com o valor retornado pela função `listener`.
 
 ```ts
 emitter.once('greet', (name) => {
     console.log(`Hello, ${name}!`);
-}).then(() => {
-    console.log('Listener called.');
+    return 'Listener called.';
+}).then((message) => {
+    console.log(message);
 });
 ```
 
