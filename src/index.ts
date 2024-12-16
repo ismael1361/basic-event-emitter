@@ -1,7 +1,7 @@
 const _subscriptions = Symbol("subscriptions");
 const _oneTimeEvents = Symbol("oneTimeEvents");
 
-type SubscriptionCallback<T extends Array<any> = any[]> = (...arg: T) => void;
+export type SubscriptionCallback<T extends Array<any> = any[]> = (...arg: T) => void;
 
 export interface BasicEventHandler {
 	stop: () => void;
@@ -12,7 +12,7 @@ function runCallback<T extends Array<any> = any[]>(callback: SubscriptionCallbac
 	callback(...arg);
 }
 
-type EventsListeners<K extends PropertyKey = any> = {
+export type EventsListeners<K extends PropertyKey = any> = {
 	[key in K]: (...p: any[]) => void;
 };
 
