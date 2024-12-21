@@ -5,13 +5,14 @@ export interface BasicEventHandler {
     stop: () => void;
     remove: () => void;
 }
-export type EventsListeners<K extends PropertyKey = any> = {
-    [key in K]: (...p: any[]) => void;
+type EventsListenersRecord = Record<PropertyKey, (...p: any[]) => void>;
+export type EventsListeners<T extends EventsListenersRecord = any> = {
+    [key in keyof T]: SubscriptionCallback<Parameters<T[key]>>;
 };
 /**
  * BasicEventEmitter class
  */
-export declare class BasicEventEmitter<T extends EventsListeners = any> {
+export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
     private [_subscriptions];
     private [_oneTimeEvents];
     private _ready;
