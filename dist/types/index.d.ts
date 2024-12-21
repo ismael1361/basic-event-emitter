@@ -1,11 +1,11 @@
 declare const _subscriptions: unique symbol;
 declare const _oneTimeEvents: unique symbol;
-type SubscriptionCallback<T extends Array<any> = any[]> = (...arg: T) => void;
+export type SubscriptionCallback<T extends Array<any> = any[]> = (...arg: T) => void;
 export interface BasicEventHandler {
     stop: () => void;
     remove: () => void;
 }
-type EventsListeners<K extends PropertyKey = any> = {
+export type EventsListeners<K extends PropertyKey = any> = {
     [key in K]: (...p: any[]) => void;
 };
 /**
