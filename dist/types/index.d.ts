@@ -1,18 +1,20 @@
 declare const _subscriptions: unique symbol;
 declare const _oneTimeEvents: unique symbol;
-export type SubscriptionCallback<T extends Array<any> = any[]> = (...arg: T) => void;
+export type SubscriptionCallback<T extends Array<any> = any[]> = ((...arg: T) => void) & {};
 export interface BasicEventHandler {
     stop: () => void;
     remove: () => void;
 }
-type EventsListenersRecord = Record<PropertyKey, (...p: any[]) => void>;
-export type EventsListeners<T extends EventsListenersRecord = any> = {
-    [key in keyof T]: SubscriptionCallback<Parameters<T[key]>>;
-};
+export type EventsListenersParameters<T extends Record<any, (...arg: any[]) => void> = Record<any, (...arg: any[]) => void>> = {
+    [key in keyof T]: Parameters<T[key]>;
+} & {};
+export type EventsListeners<T extends Record<any, any[]> = Record<any, any[]>> = {
+    [key in keyof T]: T[key];
+} & {};
 /**
  * BasicEventEmitter class
  */
-export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
+export declare class BasicEventEmitter<T extends EventsListeners | EventsListenersParameters = any> {
     private [_subscriptions];
     private [_oneTimeEvents];
     private _ready;
@@ -86,8 +88,8 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * @returns BasicEventHandler
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.on("greet", (name) => {
@@ -97,7 +99,7 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * emitter.emit("greet", "Alice");
      * // Output: Hello, Alice!
      */
-    on<K extends keyof T>(event: K, callback: SubscriptionCallback<Parameters<T[K]>>): BasicEventHandler;
+    on<K extends keyof T>(event: K, callback: SubscriptionCallback<T[K]>): BasicEventHandler;
     /**
      * Remove a listener from an event
      * @param event Event to remove the listener from
@@ -106,8 +108,8 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      *
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * const listener = (name) => {
@@ -120,7 +122,7 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * emitter.emit("greet", "Alice");
      * // No output
      */
-    off<K extends keyof T>(event: K, callback?: SubscriptionCallback<Parameters<T[K]>>): BasicEventEmitter<T>;
+    off<K extends keyof T>(event: K, callback?: SubscriptionCallback<T[K]>): BasicEventEmitter<T>;
     /**
      * Add a listener that will be removed after being called once
      * @param event Event to listen to
@@ -128,8 +130,8 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * @returns Promise that resolves when the event is emitted
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.once("greet", (name) => {
@@ -139,7 +141,7 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * emitter.emit("greet", "Alice");
      * // Output: Hello, Alice!
      */
-    once<K extends keyof T, R = any>(event: K, callback?: (...args: Parameters<T[K]>) => R): Promise<typeof callback extends undefined ? undefined : R>;
+    once<K extends keyof T, R = any>(event: K, callback?: (...args: T[K]) => R): Promise<typeof callback extends undefined ? undefined : R>;
     /**
      * Remove a listener that was added with `once`
      * @param event Event to remove the listener from
@@ -148,8 +150,8 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      *
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * const listener = (name) => {
@@ -159,7 +161,7 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * emitter.once("greet", listener);
      * emitter.offOnce("greet", listener);
      */
-    offOnce<K extends keyof T>(event: K, callback?: (...args: Parameters<T[K]>) => ReturnType<T[K]>): BasicEventEmitter<T>;
+    offOnce<K extends keyof T>(event: K, callback?: (...args: T[K]) => any): BasicEventEmitter<T>;
     /**
      * Emit an event
      * @param event Event to emit
@@ -167,8 +169,8 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * @returns BasicEventEmitter
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.on("greet", (name) => {
@@ -178,7 +180,7 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * emitter.emit("greet", "Alice");
      * // Output: Hello, Alice!
      */
-    emit<K extends keyof T>(event: K, ...arg: Parameters<T[K]>): BasicEventEmitter<T>;
+    emit<K extends keyof T>(event: K, ...arg: T[K]): BasicEventEmitter<T>;
     /**
      * Emit an event only once
      * @param event Event to emit
@@ -186,8 +188,8 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * @returns BasicEventEmitter
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.emitOnce("greet", "Alice");
@@ -198,7 +200,7 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * emitter.emit("greet", "Bob");
      * // Output: Hello, Alice!
      */
-    emitOnce<K extends keyof T>(event: K, ...arg: Parameters<T[K]>): BasicEventEmitter<T>;
+    emitOnce<K extends keyof T>(event: K, ...arg: T[K]): BasicEventEmitter<T>;
     /**
      * Pipe events from one emitter to another
      * @param event Event to pipe
@@ -206,13 +208,13 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * @returns BasicEventHandler
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * const anotherEmitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.pipe("greet", anotherEmitter);
@@ -232,13 +234,13 @@ export declare class BasicEventEmitter<T extends EventsListenersRecord = any> {
      * @returns Promise that resolves when the event is emitted
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * const anotherEmitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.pipeOnce("greet", anotherEmitter);

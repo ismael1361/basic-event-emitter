@@ -107,8 +107,8 @@ export class BasicEventEmitter {
      * @returns BasicEventHandler
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.on("greet", (name) => {
@@ -143,8 +143,8 @@ export class BasicEventEmitter {
      *
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * const listener = (name) => {
@@ -168,8 +168,8 @@ export class BasicEventEmitter {
      * @returns Promise that resolves when the event is emitted
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.once("greet", (name) => {
@@ -205,8 +205,8 @@ export class BasicEventEmitter {
      *
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * const listener = (name) => {
@@ -227,8 +227,8 @@ export class BasicEventEmitter {
      * @returns BasicEventEmitter
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.on("greet", (name) => {
@@ -262,8 +262,8 @@ export class BasicEventEmitter {
      * @returns BasicEventEmitter
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.emitOnce("greet", "Alice");
@@ -290,13 +290,13 @@ export class BasicEventEmitter {
      * @returns BasicEventHandler
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * const anotherEmitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.pipe("greet", anotherEmitter);
@@ -320,13 +320,13 @@ export class BasicEventEmitter {
      * @returns Promise that resolves when the event is emitted
      * @example
      * const emitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * const anotherEmitter = new BasicEventEmitter<{
-     *      greet: (name: string) => void;
-     *      farewell: (name: string) => void;
+     *      greet: [name: string];
+     *      farewell: [name: string];
      * }>();
      *
      * emitter.pipeOnce("greet", anotherEmitter);

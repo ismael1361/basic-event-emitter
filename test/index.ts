@@ -2,29 +2,28 @@ import BasicEventEmitter from "../src";
 
 // Cria uma instância do EventEmitter
 const emitter = new BasicEventEmitter<{
-	greet: (name: string) => void;
-	farewell: (name: string) => void;
+	greet: [name: string, index: number];
+	farewell: [name: string];
 }>();
 
 // Assinando um evento
-emitter.on("greet", (name) => {
+emitter.on("greet", (name, index) => {
 	console.log(`Hello, ${name}!`);
 });
 
 // Emitindo um evento
-emitter.emit("greet", "Alice");
+emitter.emit("greet", "Alice", 0);
 
 // Removendo um listener
-const sayGoodbye = (name) => console.log(`Goodbye, ${name}!`);
-emitter.on("farewell", sayGoodbye);
-emitter.off("farewell", sayGoodbye);
+emitter.on("farewell", (name) => console.log(`Goodbye, ${name}!`));
+emitter.off("farewell", (name) => console.log(`Goodbye, ${name}!`));
 
 // Emitindo novamente (não irá disparar, pois o listener foi removido)
 emitter.emit("farewell", "Alice");
 
 type UserEvents = {
-	login: (username: string) => void;
-	logout: (username: string) => void;
+	login: [username: string];
+	logout: [username: string];
 };
 
 class User extends BasicEventEmitter<UserEvents> {
